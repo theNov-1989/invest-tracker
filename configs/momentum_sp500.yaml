@@ -38,15 +38,15 @@ benchmark: SPY                      # buy-and-hold over the same window
 # --- Backtest period ----------------------------------------------------------
 period:
   start: 2010-01-01
-  end: 2024-12-31
+  end: 2026-08-31
 
 # --- Walk-forward split -------------------------------------------------------
 # Tuning window: [period.start, tuning_end]  -> parameter selection only.
 # Test window:   [test_start, period.end]    -> untouched, reported OOS result.
 # The two windows must not overlap (test_start strictly after tuning_end).
 walkforward:
-  tuning_end: 2018-12-31
-  test_start: 2019-01-01
+  tuning_end: 2020-12-31
+  test_start: 2021-01-01
 
 # --- Metrics ------------------------------------------------------------------
 metrics:
