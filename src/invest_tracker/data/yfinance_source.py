@@ -31,7 +31,11 @@ class YFinanceSource:
     def _cache_path(self, tickers: Sequence[str], start: date, end: date) -> Path:
         key = "|".join(sorted(tickers)) + f"@{start.isoformat()}:{end.isoformat()}"
         digest = hashlib.sha256(key.encode()).hexdigest()[:16]
-        return self.cache_dir / f"prices_{digest}.parquet"
+        # Pickle keeps the cache dependency-free: unlike parquet it needs no
+        # pyarrow/fastparquet engine, and it round-trips the DatetimeIndex and
+        # dtypes exactly. The cache is local and re-derivable, so portability
+        # across machines is a non-goal here.
+        return self.cache_dir / f"prices_{digest}.pkl"
 
     def get_prices(
         self,
@@ -41,10 +45,10 @@ class YFinanceSource:
     ) -> pd.DataFrame:
         cache_path = self._cache_path(tickers, start, end)
         if cache_path.exists():
-            return pd.read_parquet(cache_path)
+            return pd.read_pickle(cache_path)
 
         prices = self._download(tickers, start, end)
-        prices.to_parquet(cache_path)
+        prices.to_pickle(cache_path)
         return prices
 
     def _download(self, tickers: Sequence[str], start: date, end: date) -> pd.DataFrame:

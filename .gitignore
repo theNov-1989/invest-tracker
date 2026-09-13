@@ -17,6 +17,7 @@ dist/
 # Data cache (fetched prices are re-derivable, never commit them)
 data/cache/
 *.parquet
+*.pkl
 
 # Backtest outputs
 outputs/
