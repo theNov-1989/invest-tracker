@@ -1,0 +1,27 @@
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Data cache (fetched prices are re-derivable, never commit them)
+data/cache/
+*.parquet
+
+# Backtest outputs
+outputs/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

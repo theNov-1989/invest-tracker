@@ -1,0 +1,54 @@
+# =============================================================================
+# Backtest specification.
+#
+# This single file fully drives a run. Strategy parameters live HERE, never
+# hard-coded in the logic. Point run_backtest.py at this file (or a copy of it)
+# to reproduce or vary a run.
+# =============================================================================
+
+# --- Universe -----------------------------------------------------------------
+# The cross-section to trade. v1 is a static, committed S&P 500 snapshot.
+# Swap `source`/`path` later without touching strategy code.
+universe:
+  source: csv                       # currently supported: "csv"
+  path: data/universe/sp500.csv
+
+# --- Signal -------------------------------------------------------------------
+# 12-month price momentum skipping the most recent month:
+# return from t-`lookback_days` to t-`skip_days` (trading days).
+signal:
+  lookback_days: 252                # ~12 months
+  skip_days: 21                     # ~1 month skip (avoid short-term reversal)
+
+# --- Portfolio ----------------------------------------------------------------
+portfolio:
+  long_quantile: 0.10               # go long the top decile by signal
+  weighting: equal                  # currently supported: "equal"
+  rebalance: monthly                # currently supported: "monthly"
+
+# --- Costs --------------------------------------------------------------------
+# Per-trade cost in basis points, charged on turnover at every rebalance.
+# 10 bps is a conservative round-trip-aware default for liquid US large caps.
+costs:
+  per_trade_bps: 10
+
+# --- Benchmark ----------------------------------------------------------------
+benchmark: SPY                      # buy-and-hold over the same window
+
+# --- Backtest period ----------------------------------------------------------
+period:
+  start: 2010-01-01
+  end: 2024-12-31
+
+# --- Walk-forward split -------------------------------------------------------
+# Tuning window: [period.start, tuning_end]  -> parameter selection only.
+# Test window:   [test_start, period.end]    -> untouched, reported OOS result.
+# The two windows must not overlap (test_start strictly after tuning_end).
+walkforward:
+  tuning_end: 2018-12-31
+  test_start: 2019-01-01
+
+# --- Metrics ------------------------------------------------------------------
+metrics:
+  risk_free_rate: 0.0               # annualized, decimal (0.0 = 0%). Configurable.
+  periods_per_year: 252             # trading days/year for annualization
